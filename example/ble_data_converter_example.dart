@@ -8,11 +8,11 @@ void tryConverter() {
   List<int> body = [];
 
   // id(i16)
-  const functionId = 0x0200;
-  final functionData =
-      BLEDataConverter.i16.intToBytes(functionId).reversed.toList();
+  const sampleID = 0x0200;
+  final sampleData =
+      BLEDataConverter.i16.intToBytes(sampleID).reversed.toList();
 
-  body.addAll(functionData);
+  body.addAll(sampleData);
 
   // id(i8)
   const requestId = 255;
@@ -20,30 +20,39 @@ void tryConverter() {
   body.addAll(requestData);
 
   // random str(utf8)
-  const randomStr = "adf";
-  final tokenData = BLEDataConverter.str.stringToUtf8(randomStr);
+  const randomStr = "sample";
+  final strData = BLEDataConverter.str.stringToUtf8(randomStr);
 
-  body.addAll(tokenData);
+  body.addAll(strData);
 
   // timestamp(i64)
   final milSecounds = DateTime.now().millisecondsSinceEpoch;
-  final timestampData =
-      BLEDataConverter.i64.intToBytes(milSecounds).reversed.toList();
+  // convert milliseconds to secounds;
+  final secounds = milSecounds ~/ (1000);
 
-  print(BLEDataConverter.i64
-      .byteOfMillisecondsToDatetime(timestampData.reversed.toList()));
+  final timestampData =
+      BLEDataConverter.i64.intToBytes(secounds).reversed.toList();
+
+  // Datetime type
+  print(_byteOdSecoundsToDatetime(timestampData.reversed.toList()));
 
   body.addAll(timestampData);
 
   // random num(i16)
-  const commandType = 32769;
-  final commandData =
-      BLEDataConverter.i16.intToBytes(commandType).reversed.toList();
+  const fizzType = 32769;
+  final fizzData = BLEDataConverter.i16.intToBytes(fizzType).reversed.toList();
 
-  body.addAll(commandData);
+  body.addAll(fizzData);
 
   print(
       body); //[2, 0, 255, 97, 100, 102, 0, 0, 1, 134, 33, 13, 184, 13, 128, 1]
 
   print(body.length); // 16
+}
+
+// seconds(timestamp) to Datetime
+// this methods not include package.
+DateTime _byteOdSecoundsToDatetime(List<int> bytes) {
+  final intValue = BLEDataConverter.i64.bytesToInt(bytes);
+  return DateTime.fromMillisecondsSinceEpoch(intValue * 1000);
 }
