@@ -11,29 +11,63 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+# Purpose
 
-## Features
+This package is for easy conversion to rawdata(`List<int>`) to be sent to BLE devices, etc.  
+The types supported by this package are `utf8`, `int8/16/32/64`, `uint8/16/32/64`.  
+it is based on Swift(iOS) int type.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+## How to Use
 
-## Getting started
+- **String to utf-8**
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+``` dart
 
-## Usage
+  // encode
+  const String sampleStr = "sample";
+  final List<int> strData = BLEDataConverter.str.stringToUtf8(randomStr);
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+  print(strData) // [115, 97, 109, 112, 108, 101]
+  
+  // decode
+  final String decodeStr = BLEDataConverter.str.stringFromUtf8(strData)
 
-```dart
-const like = 'sample';
+  print(decodeStr) // "sample"
+
 ```
 
-## Additional information
+- **int to int64 byte data**
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+``` dart
+
+  // encode
+  final int i64Max = 9223372036854775807;
+  final List<int> value = BLEDataConverter.i64.intToBytes(i64Max);
+
+  print(value); // [255, 255, 255, 255, 255, 255, 255, 127]
+
+  // decode
+  final int decode = BLEDataConverter.i64.bytesToInt(value);
+
+  print(decode); // 9223372036854775807
+
+```
+
+
+## Compatible Type
+
+|Type|byte length| max | min |
+| - | - | - | - |
+|Int8|1|127|-128|
+|Int16|2|32767|-32768|
+|Int32|4|2147483647|-2147483648|
+|Int64|8|9223372036854775807|-9223372036854775808|
+|UInt8|1|255|0|
+|UInt16|2|65535|0|
+|UInt32|4|4294967295|0|
+|UInt64|8|18446744073709551615|0|
+
+|Type|byte Length|
+| - | - |
+|utf8|[reference](https://mothereff.in/byte-counter)|
+
