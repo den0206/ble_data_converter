@@ -9,17 +9,25 @@ enum BLEDataConverter {
   i8,
   i16,
   i32,
-  i64;
+  i64,
+  u8,
+  u16,
+  u32,
+  u64;
 
-  int get _maxDigits {
+  int get _byteSize {
     switch (this) {
       case BLEDataConverter.i8:
+      case BLEDataConverter.u8:
         return 1;
       case BLEDataConverter.i16:
+      case BLEDataConverter.u16:
         return 2;
       case BLEDataConverter.i32:
+      case BLEDataConverter.u32:
         return 4;
       case BLEDataConverter.i64:
+      case BLEDataConverter.u64:
         return 8;
       default:
         throw AssertionError();
@@ -43,16 +51,25 @@ enum BLEDataConverter {
   }
 
   Uint8List intToBytes(int value) {
-    final u8List = Uint8List(_maxDigits);
+    final u8List = Uint8List(_byteSize);
     switch (this) {
       case BLEDataConverter.i8:
-        return (u8List..buffer.asUint8List()[0] = value);
+        return (u8List..buffer.asInt8List()[0] = value);
       case BLEDataConverter.i16:
         return u8List..buffer.asInt16List()[0] = value;
       case BLEDataConverter.i32:
-        return u8List..buffer.asUint32List()[0] = value;
+        return u8List..buffer.asInt32List()[0] = value;
       case BLEDataConverter.i64:
         return u8List..buffer.asInt64List()[0] = value;
+      case BLEDataConverter.u8:
+        return (u8List..buffer.asUint8List()[0] = value);
+      case BLEDataConverter.u16:
+        return (u8List..buffer.asUint16List()[0] = value);
+      case BLEDataConverter.u32:
+        return (u8List..buffer.asUint32List()[0] = value);
+      case BLEDataConverter.u64:
+        return (u8List..buffer.asUint64List()[0] = value);
+
       default:
         throw AssertionError();
     }
