@@ -7,6 +7,9 @@ int randomGenerator(BLEDataConverter converter) {
   final i16max = 32767;
   final i32max = 2147483647;
   final i64max = 9223372036854775807;
+  final u8max = 255;
+  final u16max = 65535;
+  final u32max = 4294967295;
 
   switch (converter) {
     case BLEDataConverter.i8:
@@ -16,7 +19,15 @@ int randomGenerator(BLEDataConverter converter) {
     case BLEDataConverter.i32:
       return Random().nextInt(i32max);
     case BLEDataConverter.i64:
+    case BLEDataConverter.u64:
       return i64max - Random().nextInt(1000000);
+    case BLEDataConverter.u8:
+      return Random().nextInt(u8max);
+    case BLEDataConverter.u16:
+      return Random().nextInt(u16max);
+    case BLEDataConverter.u32:
+      return Random().nextInt(u32max);
+
     default:
       throw AssertionError();
   }

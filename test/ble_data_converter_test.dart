@@ -1,5 +1,5 @@
-import 'package:ble_data_converter/src/ble_data_converter_base.dart';
-import 'package:ble_data_converter/src/random_generator.dart';
+import 'package:ble_data_converter/ble_data_converter/src/ble_data_converter.dart';
+import 'package:ble_data_converter/random_generator/src/random_generator.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:test/test.dart';
 
