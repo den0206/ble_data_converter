@@ -1,6 +1,6 @@
 name: ble_data_converter
 description: This package is for easy conversion to rawdata(List<int>) to be sent to BLE devices, etc.
-version: 0.9.0
+version: 1.0.0
 repository: https://github.com/den0206/ble_data_converter
 platforms:
   android:
@@ -14,5 +14,5 @@ environment:
 
 dev_dependencies:
   date_utils: ^0.2.0
-  lints: ^2.0.1
-  test: ^1.22.2
+  lints: ^4.0.0
+  test: ^1.25.8
