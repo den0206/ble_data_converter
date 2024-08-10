@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:ble_data_converter/ble_data_converter/src/ble_data_converter.dart';
 import 'package:ble_data_converter/random_generator/src/random_generator.dart';
 import 'package:date_utils/date_utils.dart';
@@ -15,6 +17,14 @@ void main() {
       expect(value, decode);
     });
 
+    test('string test (little Endian)', () {
+      final String value = 'test string';
+
+      final encode = converter.stringToUtf8(value, endian: Endian.little);
+      final decode = converter.stringFromUtf8(encode, endian: Endian.little);
+      expect(value, decode);
+    });
+
     test('string test AssertionError', () {
       final int value = 10;
 
@@ -29,6 +39,14 @@ void main() {
 
       final encode = converter.intToBytes(value);
       final decode = converter.bytesToInt(encode);
+      expect(value, decode);
+    });
+
+    test('i8 test (little Endian)', () {
+      final int value = randomGenerator(converter);
+
+      final encode = converter.intToBytes(value, endian: Endian.little);
+      final decode = converter.bytesToInt(encode, endian: Endian.little);
       expect(value, decode);
     });
 
@@ -53,6 +71,14 @@ void main() {
       expect(value, decode);
     });
 
+    test('i16 test (little Endian)', () {
+      final int value = 0x0200;
+
+      final encode = converter.intToBytes(value, endian: Endian.little);
+      final decode = converter.bytesToInt(encode, endian: Endian.little);
+      expect(value, decode);
+    });
+
     test('random i16 test', () {
       final int value = randomGenerator(converter);
 
@@ -64,11 +90,19 @@ void main() {
 
   group('i32 test', () {
     final converter = BLEDataConverter.i32;
-    test('string test', () {
+    test('i32 test', () {
       final int value = randomGenerator(converter);
 
       final encode = converter.intToBytes(value);
       final decode = converter.bytesToInt(encode);
+      expect(value, decode);
+    });
+
+    test('i32 test (little Endian)', () {
+      final int value = randomGenerator(converter);
+
+      final encode = converter.intToBytes(value, endian: Endian.little);
+      final decode = converter.bytesToInt(encode, endian: Endian.little);
       expect(value, decode);
     });
   });
@@ -80,6 +114,14 @@ void main() {
 
       final encode = converter.intToBytes(value);
       final decode = converter.bytesToInt(encode);
+      expect(value, decode);
+    });
+
+    test('i64 test (little Endian)', () {
+      final int value = randomGenerator(converter);
+
+      final encode = converter.intToBytes(value, endian: Endian.little);
+      final decode = converter.bytesToInt(encode, endian: Endian.little);
       expect(value, decode);
     });
 
@@ -95,12 +137,38 @@ void main() {
       expect(now.second, decodeDate.second);
     });
 
+    test('millisecond test (little Endian)', () {
+      final now = DateTime.now();
+      final millDate = now.millisecondsSinceEpoch;
+
+      final encode = converter.intToBytes(millDate, endian: Endian.little);
+      final decodeDate =
+          converter.byteOfMillisecondsToDatetime(encode, endian: Endian.little);
+
+      expect(DateUtils.isSameDay(now, decodeDate), true);
+      expect(now.hour, decodeDate.hour);
+      expect(now.second, decodeDate.second);
+    });
+
     test('microsecond test', () {
       final now = DateTime.now();
       final millDate = now.microsecondsSinceEpoch;
 
       final encode = converter.intToBytes(millDate);
       final decodeDate = converter.byteOfMicrosecondsToDatetime(encode);
+
+      expect(DateUtils.isSameDay(now, decodeDate), true);
+      expect(now.minute, decodeDate.minute);
+      expect(now.second, decodeDate.second);
+    });
+
+    test('microsecond test', () {
+      final now = DateTime.now();
+      final millDate = now.microsecondsSinceEpoch;
+
+      final encode = converter.intToBytes(millDate, endian: Endian.little);
+      final decodeDate =
+          converter.byteOfMicrosecondsToDatetime(encode, endian: Endian.little);
 
       expect(DateUtils.isSameDay(now, decodeDate), true);
       expect(now.minute, decodeDate.minute);
