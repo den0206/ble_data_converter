@@ -15,42 +15,55 @@ and the Flutter guide for
 
 This package is for easy conversion to rawdata(`List<int>`) to be sent to BLE devices, etc.  
 The types supported by this package are `utf8`, `int8/16/32/64`, `uint8/16/32/64`.  
+also supported Endian Types (**Big-endian / Little-endian**)  
 it is based on Swift(iOS) int type.
 
 ## How to Use
 
-- **String to utf-8**
+- **String to utf-8(Big-endian)**
 
 ``` dart
-
-  // encode
+  // encode(Big-endian)
   const String sampleStr = "sample";
   final List<int> strData = BLEDataConverter.str.stringToUtf8(randomStr);
 
   print(strData) // [115, 97, 109, 112, 108, 101]
   
-  // decode
+  // decode(Big-endian)
   final String decodeStr = BLEDataConverter.str.stringFromUtf8(strData)
 
   print(decodeStr) // "sample"
-
 ```
 
-- **int to int64 byte data**
+- **int to int64 byte data(Big-endian)**
 
 ``` dart
-
-  // encode
+  // encode(Big-endian)
   final int i64Max = 9223372036854775807;
   final List<int> value = BLEDataConverter.i64.intToBytes(i64Max);
 
-  print(value); // [255, 255, 255, 255, 255, 255, 255, 127]
+  print(value); // [127, 255, 255, 255, 255, 255, 255, 255]
 
-  // decode
+  // decode(Big-endian)
   final int decode = BLEDataConverter.i64.bytesToInt(value);
 
   print(decode); // 9223372036854775807
+```
 
+- **also Support Little-endian**
+``` dart
+  // encode(Little-endian)
+  final int i64Max = 9223372036854775807;
+  final List<int> value =
+      BLEDataConverter.i64.intToBytes(i64Max, endian: Endian.little);
+
+  print(value); //[127, 255, 255, 255, 255, 255, 255, 255]
+
+  // decode(Little-endian)
+  final int decode =
+      BLEDataConverter.i64.bytesToInt(value, endian: Endian.little);
+
+  print(decode); // 9223372036854775807
 ```
 
 
