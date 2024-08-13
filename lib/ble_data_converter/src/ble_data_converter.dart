@@ -34,53 +34,78 @@ enum BLEDataConverter {
     }
   }
 
-  List<int> stringToUtf8(String value) {
+  List<int> stringToUtf8(String value, {Endian endian = Endian.big}) {
     if (this == str) {
-      return utf8.encode(value);
+      final encode = utf8.encode(value);
+      if (endian == Endian.little) {
+        return encode.reversed.toList();
+      }
+      return encode;
     } else {
       throw AssertionError();
     }
   }
 
-  String stringFromUtf8(List<int> bytes) {
+  String stringFromUtf8(List<int> bytes, {Endian endian = Endian.big}) {
     if (this == str) {
+      if (endian == Endian.little) {
+        return utf8.decode(bytes.reversed.toList());
+      }
       return utf8.decode(bytes);
     } else {
       throw AssertionError();
     }
   }
 
-  Uint8List intToBytes(int value) {
+  Uint8List intToBytes(int value, {Endian endian = Endian.big}) {
     final u8List = Uint8List(_byteSize);
     switch (this) {
       case BLEDataConverter.i8:
-        return (u8List..buffer.asInt8List()[0] = value);
+        u8List.buffer.asInt8List()[0] = value;
+        break;
       case BLEDataConverter.i16:
-        return u8List..buffer.asInt16List()[0] = value;
+        u8List.buffer.asInt16List()[0] = value;
+        break;
       case BLEDataConverter.i32:
-        return u8List..buffer.asInt32List()[0] = value;
+        u8List.buffer.asInt32List()[0] = value;
+        break;
       case BLEDataConverter.i64:
-        return u8List..buffer.asInt64List()[0] = value;
+        u8List.buffer.asInt64List()[0] = value;
+        break;
       case BLEDataConverter.u8:
-        return (u8List..buffer.asUint8List()[0] = value);
+        u8List.buffer.asUint8List()[0] = value;
+        break;
       case BLEDataConverter.u16:
-        return (u8List..buffer.asUint16List()[0] = value);
+        u8List.buffer.asUint16List()[0] = value;
+        break;
       case BLEDataConverter.u32:
-        return (u8List..buffer.asUint32List()[0] = value);
+        u8List.buffer.asUint32List()[0] = value;
+        break;
       case BLEDataConverter.u64:
-        return (u8List..buffer.asUint64List()[0] = value);
+        u8List.buffer.asUint64List()[0] = value;
+        break;
 
       default:
         throw AssertionError();
     }
+
+    if (endian == Endian.little) {
+      return Uint8List.fromList(u8List.reversed.toList());
+    }
+
+    return u8List;
   }
 
-  int bytesToInt(List<int> bytes) {
+  int bytesToInt(List<int> bytes, {Endian endian = Endian.big}) {
     switch (this) {
       case BLEDataConverter.str:
         throw AssertionError();
       default:
         var value = 0;
+
+        if (endian == Endian.little) {
+          bytes = bytes.reversed.toList(); // リトルエンディアンの場合、バイトを反転
+        }
 
         for (var i = 0, length = bytes.length; i < length; i++) {
           value += bytes[i] * pow(256, i).toInt();
@@ -90,13 +115,15 @@ enum BLEDataConverter {
     }
   }
 
-  DateTime byteOfMillisecondsToDatetime(List<int> bytes) {
-    final intValue = bytesToInt(bytes);
+  DateTime byteOfMillisecondsToDatetime(List<int> bytes,
+      {Endian endian = Endian.big}) {
+    final intValue = bytesToInt(bytes, endian: endian);
     return DateTime.fromMillisecondsSinceEpoch(intValue);
   }
 
-  DateTime byteOfMicrosecondsToDatetime(List<int> bytes) {
-    final intValue = bytesToInt(bytes);
+  DateTime byteOfMicrosecondsToDatetime(List<int> bytes,
+      {Endian endian = Endian.big}) {
+    final intValue = bytesToInt(bytes, endian: endian);
     return DateTime.fromMicrosecondsSinceEpoch(intValue);
   }
 }
